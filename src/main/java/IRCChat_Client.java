@@ -3,14 +3,13 @@ import java.net.Socket;
 import java.util.Scanner;
 
 
-public class HackBot {
+public class IRCChat_Client {
     static String server = "irc.freenode.net";
 
     static String nick = "MINO0885_JavaBot";
 
     static String login = "MINO_MAC";
 
-    static String channel = "#mini123";
 
     public static void main(String[] args) throws Exception {
         Socket socket = new Socket(server, 6667);
