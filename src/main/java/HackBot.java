@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class HackBot {
     static String server = "irc.freenode.net";
 
-    static String nick = "MINOadfad";
+    static String nick = "MINO0885_JavaBot";
 
     static String login = "MINO_MAC";
 
@@ -27,6 +27,7 @@ public class HackBot {
                 }
             } catch (Exception e) {
                 System.err.println(e.getMessage());
+                login(writer);
             }
 
         }).start();
@@ -40,8 +41,10 @@ public class HackBot {
 
 
         while (true) {
+            System.err.println(" type <start> to the menu ");
             String comd = sysScanner.nextLine();
             if (!"start".equals(comd)) {
+                System.err.println("error input , type <start> to the menu");
                 comd = "";
                 continue;
             }
@@ -49,6 +52,7 @@ public class HackBot {
             System.err.println("================ <group> for group chat ================");
             System.err.println("================ <user> for user chat ================");
             System.err.println("================ <:exitsys> for exit the system ================");
+            System.err.println("================ else to send commd to the IRC server ================");
             comd = sysScanner.nextLine();
             switch (comd) {
                 case "group":
@@ -68,11 +72,31 @@ public class HackBot {
                     System.exit(0);
                     break;
                 default:
-                    join(writer, channel);
-                    sendGroupMsg(writer, channel);
+                    writeCommd(writer, comd);
                     comd = "";
                     break;
             }
+        }
+    }
+
+    private static void writeCommd(BufferedWriter writer, String commd) {
+        try {
+            System.err.println("================ start commd mode ================");
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                if ("".equals(commd)) {
+                    commd = scanner.nextLine();
+                }
+                if (":exit".equals(commd)) {
+                    System.err.println("================ exit commd mode ================");
+                    break;
+                }
+                writer.write(commd + "\r\n");
+                writer.flush();
+                commd = "";
+            }
+        } catch (Exception e) {
+            System.err.println("write commd error");
         }
     }
 
@@ -89,7 +113,9 @@ public class HackBot {
                 writer.flush();
             }
         } catch (Exception e) {
-            System.err.println("================ sendU2Msg error" + e.getMessage());
+            System.err.println("================ sendU2Msg error " + e.getMessage());
+            login(writer);
+
         }
     }
 
@@ -99,18 +125,18 @@ public class HackBot {
             writer.write("PRIVMSG " + channelname + " :I got pinged!\r\n");
             writer.flush();
         } catch (IOException e) {
-            System.err.println("================ join error" + e.getMessage());
-            System.exit(0);
+            System.err.println("================ join error " + e.getMessage());
+            login(writer);
         }
     }
 
     public static void login(BufferedWriter writer) {
         try {
             writer.write("NICK " + nick + "\r\n");
-            writer.write("USER " + login + " 8 * : Java IRC Hacks Bot\r\n");
+            writer.write("USER " + login + " MINOPC * : MINO0885\r\n");
             writer.flush();
         } catch (IOException e) {
-            System.err.println("================ login error" + e.getMessage());
+            System.err.println("================ login error " + e.getMessage());
             System.exit(0);
         }
     }
@@ -121,14 +147,17 @@ public class HackBot {
             while (true) {
                 String groupMsg = scanner.nextLine();
                 if (":exit".equals(groupMsg)) {
-                    System.err.println("================ group chat end");
+                    writer.write("PART " + channelname + " be right back ~ ~\r\n");
+                    writer.flush();
+                    System.err.println("================ group chat end ");
                     break;
                 }
                 writer.write("PRIVMSG " + channelname + " :" + groupMsg + "\r\n");
                 writer.flush();
             }
         } catch (Exception e) {
-            System.err.println("================ sendGroupMsg error" + e.getMessage());
+            System.err.println("================ sendGroupMsg error " + e.getMessage());
+            login(writer);
         }
     }
 }
