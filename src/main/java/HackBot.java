@@ -26,54 +26,80 @@ public class HackBot {
                     System.out.println(line);
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.err.println(e.getMessage());
             }
 
         }).start();
-        // Log on to the server.
+
         login(writer);
-        join(writer);
-        sendGroupMsg(writer);
+        System.err.println("================ connect " + server + " success ================");
+//        System.err.println("================ <group> for group chat ================");
+//        System.err.println("================ <user> for user chat ================");
+//        System.err.println("================ <:exitsys> for exit the system ================");
         Scanner sysScanner = new Scanner(System.in);
-        String comd = sysScanner.nextLine();
-        switch (comd) {
-            case "group":
-                sendGroupMsg(writer);
-                break;
-            case "user":
-                System.out.println("nikename: ");
-                String nickname = sysScanner.nextLine();
-                sendU2Msg(writer, nickname);
-                break;
-            case ":exitsys":
-                System.exit(0);
+
+
+        while (true) {
+            String comd = sysScanner.nextLine();
+            if (!"start".equals(comd)) {
+                comd = "";
+                continue;
+            }
+            comd = "";
+            System.err.println("================ <group> for group chat ================");
+            System.err.println("================ <user> for user chat ================");
+            System.err.println("================ <:exitsys> for exit the system ================");
+            comd = sysScanner.nextLine();
+            switch (comd) {
+                case "group":
+                    System.err.println("================ channelname: ");
+                    String channelname = sysScanner.nextLine();
+                    join(writer, "#" + channelname);
+                    sendGroupMsg(writer, "#" + channelname);
+                    comd = "";
+                    break;
+                case "user":
+                    System.err.println("================ nikename: ");
+                    String nickname = sysScanner.nextLine();
+                    sendU2Msg(writer, nickname);
+                    comd = "";
+                    break;
+                case ":exitsys":
+                    System.exit(0);
+                    break;
+                default:
+                    join(writer, channel);
+                    sendGroupMsg(writer, channel);
+                    comd = "";
+                    break;
+            }
         }
     }
 
     private static void sendU2Msg(BufferedWriter writer, String nickname) {
         try {
-            System.out.println("send msg to " + nickname);
+            System.err.println("================ send msg to " + nickname);
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 String u2Msg = scanner.nextLine();
                 if (":exit".equals(u2Msg)) {
-                    return;
+                    break;
                 }
                 writer.write("PRIVMSG " + nickname + " :" + u2Msg + "\r\n");
                 writer.flush();
             }
         } catch (Exception e) {
-            System.out.println("sendU2Msg error" + e.getMessage());
+            System.err.println("================ sendU2Msg error" + e.getMessage());
         }
     }
 
-    public static void join(BufferedWriter writer) {
+    public static void join(BufferedWriter writer, String channelname) {
         try {
-            writer.write("JOIN " + channel + "\r\n");
-            writer.write("PRIVMSG " + channel + " :I got pinged!\r\n");
+            writer.write("JOIN " + channelname + "\r\n");
+            writer.write("PRIVMSG " + channelname + " :I got pinged!\r\n");
             writer.flush();
         } catch (IOException e) {
-            System.out.println("join error" + e.getMessage());
+            System.err.println("================ join error" + e.getMessage());
             System.exit(0);
         }
     }
@@ -84,25 +110,25 @@ public class HackBot {
             writer.write("USER " + login + " 8 * : Java IRC Hacks Bot\r\n");
             writer.flush();
         } catch (IOException e) {
-            System.out.println("login error" + e.getMessage());
+            System.err.println("================ login error" + e.getMessage());
             System.exit(0);
         }
     }
 
-    public static void sendGroupMsg(BufferedWriter writer) {
+    public static void sendGroupMsg(BufferedWriter writer, String channelname) {
         try {
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 String groupMsg = scanner.nextLine();
                 if (":exit".equals(groupMsg)) {
-                    System.out.println("group chat end");
-                    return;
+                    System.err.println("================ group chat end");
+                    break;
                 }
-                writer.write("PRIVMSG " + channel + " :" + groupMsg + "\r\n");
+                writer.write("PRIVMSG " + channelname + " :" + groupMsg + "\r\n");
                 writer.flush();
             }
         } catch (Exception e) {
-            System.out.println("sendGroupMsg error" + e.getMessage());
+            System.err.println("================ sendGroupMsg error" + e.getMessage());
         }
     }
 }
