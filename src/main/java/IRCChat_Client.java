@@ -33,12 +33,7 @@ public class IRCChat_Client {
 
         login(writer);
         System.err.println("================ connect " + server + " success ================");
-//        System.err.println("================ <group> for group chat ================");
-//        System.err.println("================ <user> for user chat ================");
-//        System.err.println("================ <:exitsys> for exit the system ================");
         Scanner sysScanner = new Scanner(System.in);
-
-
         while (true) {
             System.err.println(" type <start> to the menu ");
             String comd = sysScanner.nextLine();
@@ -69,7 +64,6 @@ public class IRCChat_Client {
                     break;
                 case ":exitsys":
                     System.exit(0);
-                    break;
                 default:
                     writeCommd(writer, comd);
                     comd = "";
